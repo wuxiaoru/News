@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjfu.news.dao.NewsOperateLogMapper">
+
+    <insert id="insertLog" parameterType="com.bjfu.news.entity.NewsOperateLog" keyProperty="id"
+            useGeneratedKeys="true">
+        insert into news_operate_log ( CONTRIBUTION_ID, STATUS, OPERATE_DETAIL, OPERATE_TYPE, OPERATE_ID)
+        values (#{contributionId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR},
+                #{operateDetail,jdbcType=VARCHAR}, #{operateType,jdbcType=VARCHAR}, #{operateId,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="selectByCId" resultType="com.bjfu.news.entity.NewsOperateLog">
+       select * from news_operate_log where CONTRIBUTION_ID=#{id} order by OPERATE_TIME desc
+   </select>
+
+    <select id="loadById" resultType="com.bjfu.news.entity.NewsOperateLog">
+       select * from news_operate_log where ID=#{id}
+   </select>
+
+</mapper>

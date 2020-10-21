@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjfu.news.dao.NewsUserInfoMapper">
+    <insert id="insertUserInfo" parameterType="com.bjfu.news.entity.NewsUserInfo" keyProperty="id"
+            useGeneratedKeys="true">
+        insert into news_user_info ( ENO, USER_NAME, UNIT, JOB, MAIL, OFFICE_PHONE, MOBILE, DISABLED)
+        values (#{eno,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},
+                #{unit,jdbcType=VARCHAR}, #{job,jdbcType=VARCHAR}, #{mail,jdbcType=VARCHAR},
+                #{officePhone,jdbcType=VARCHAR},#{mobile,jdbcType=VARCHAR},#{disabled,jdbcType=BIT}
+        )
+    </insert>
+
+    <select id="list" parameterType="com.bjfu.news.req.UserReq" resultType="com.bjfu.news.entity.NewsUserInfo">
+        select * from news_user_info where DISABLED = false
+        <if test="userName!=null">
+            and USER_NAME like concat('%',#{userName},'%')
+        </if>
+        <if test="unit!=null and unit!=''">
+            and UNIT = #{unit}
+        </if>
+        <if test="eno!=null and eno!=''">
+            and ENO = #{eno}
+        </if>
+        <if test="userIds!=null and userIds.size()>0">
+            and ID in
+            <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="page" parameterType="com.bjfu.news.req.UserReq"
+            resultType="com.bjfu.news.entity.NewsUserInfo">
+        select * from news_user_info where disabled = false
+        <if test="userName!=null">
+            and USER_NAME like concat('%',#{userName},'%')
+        </if>
+        <if test="unit!=null and unit!=''">
+            and UNIT = #{unit}
+        </if>
+        <if test="eno!=null and eno!=''">
+            and ENO = #{eno}
+        </if>
+        <if test="userIds!=null and userIds.size()>0">
+            and ID in
+            <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        limit #{start},#{size}
+    </select>
+
+    <select id="getCount" parameterType="com.bjfu.news.req.UserReq"
+            resultType="Integer">
+        select count(*) from news_user_info where disabled = false
+        <if test="userName!=null">
+            and USER_NAME like concat('%',#{userName},'%')
+        </if>
+        <if test="unit!=null and unit!=''">
+            and UNIT = #{unit}
+        </if>
+        <if test="eno!=null and eno!=''">
+            and ENO = #{eno}
+        </if>
+        <if test="userIds!=null and userIds.size()>0">
+            and ID in
+            <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectById" resultType="com.bjfu.news.entity.NewsUserInfo">
+         select * from news_user_info where disabled = false and id = #{id}
+  </select>
+
+    <select id="selectInCluDisableById" resultType="com.bjfu.news.entity.NewsUserInfo">
+         select * from news_user_info where id = #{id}
+  </select>
+
+    <select id="selectByEno" resultType="com.bjfu.news.entity.NewsUserInfo">
+         select * from news_user_info where disabled = false and eno=#{eno}
+  </select>
+
+    <select id="selectByIds" resultType="com.bjfu.news.entity.NewsUserInfo">
+        select * from news_user_info where id in
+        <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="update" parameterType="com.bjfu.news.entity.NewsUserInfo">
+        update news_user_info
+        <set>
+            <if test="disabled!=null">
+                disabled=#{disabled},
+            </if>
+            <if test="eno!=null">
+                eno=#{eno},
+            </if>
+            <if test="userName!=null">
+                USER_NAME=#{userName},
+            </if>
+            <if test="unit!=null">
+                unit=#{unit},
+            </if>
+            <if test="job!=null">
+                job=#{job},
+            </if>
+            <if test="mail!=null">
+                mail=#{mail},
+            </if>
+            <if test="officePhone!=null">
+                OFFICE_PHONE=#{officePhone},
+            </if>
+            <if test="mobile!=null">
+                mobile=#{mobile},
+            </if>
+        </set>
+        where ID=#{id}
+    </update>
+</mapper>

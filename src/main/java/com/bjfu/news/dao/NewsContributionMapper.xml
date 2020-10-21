@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjfu.news.dao.NewsContributionMapper">
+    <insert id="insert" parameterType="com.bjfu.news.entity.NewsContribution" keyProperty="id"
+            useGeneratedKeys="true">
+    insert into news_contribution (TITLE, STATUS,DOC_URL, DOC_AUTHOR, PIC_URL,PIC_AUTHOR,NOTE,SUBMIT_TIME,USER_ID,DISABLED)
+    values (#{title,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+      #{docUrl,jdbcType=VARCHAR}, #{docAuthor,jdbcType=VARCHAR}, #{picUrl,jdbcType=VARCHAR},
+      #{picAuthor,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{submitTime,jdbcType=TIMESTAMP},
+      #{userId,jdbcType=BIGINT}, #{disabled,jdbcType=BIT})
+  </insert>
+    <select id="selectById" resultType="com.bjfu.news.entity.NewsContribution">
+         select * from news_contribution where disabled = false and id = #{id}
+  </select>
+
+    <select id="selectByIds" resultType="com.bjfu.news.entity.NewsContribution">
+        select * from news_contribution where disabled = false and id in
+        <foreach item="id" index="index" collection="ids">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="page" parameterType="com.bjfu.news.req.ContributionReq"
+            resultType="com.bjfu.news.entity.NewsContribution">
+        select * from news_contribution where disabled = false
+        <if test="userId!=null">
+            and USER_ID = #{userId}
+        </if>
+        <if test="docAuthor!=null">
+            and DOC_AUTHOR like concat('%',#{docAuthor},'%')
+        </if>
+        <if test="title!=null">
+            and title like concat('%',#{title},'%')
+        </if>
+        <if test="status!=null">
+            and status = #{status}
+        </if>
+        <if test="startTime!=null and endTime!=null">
+            and SUBMIT_TIME between #{startTime} and #{endTime}
+        </if>
+        <if test="contributionIds!=null and contributionIds.size()>0">
+            and ID in
+            <foreach collection="contributionIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="statusList!=null and statusList.size()>0">
+            and status in
+            <foreach collection="statusList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="userIds!=null and userIds.size()>0">
+            and USER_ID in
+            <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by SUBMIT_TIME desc
+        limit #{start},#{size}
+    </select>
+
+    <select id="list" parameterType="com.bjfu.news.req.ContributionReq"
+            resultType="com.bjfu.news.entity.NewsContribution">
+        select * from news_contribution where disabled = false
+        <if test="userId!=null">
+            and USER_ID=#{userId}
+        </if>
+        <if test="docAuthor!=null">
+            and DOC_AUTHOR like concat('%',#{docAuthor},'%')
+        </if>
+        <if test="title!=null">
+            and title like concat('%',#{title},'%')
+        </if>
+        <if test="status!=null">
+            and status = #{status}
+        </if>
+        <if test="startTime!=null and endTime!=null">
+            and SUBMIT_TIME between #{startTime} and #{endTime}
+        </if>
+    </select>
+
+    <select id="getCount" parameterType="com.bjfu.news.req.ContributionReq"
+            resultType="Integer">
+        select count(*) from news_contribution where disabled = false
+        <if test="userId!=null">
+            and USER_ID = #{userId}
+        </if>
+        <if test="docAuthor!=null">
+             and DOC_AUTHOR like concat('%',#{docAuthor},'%')
+        </if>
+        <if test="title!=null">
+            and title like concat('%',#{title},'%')
+        </if>
+        <if test="status!=null">
+            and status = #{status}
+        </if>
+        <if test="startTime!=null and endTime!=null">
+            and SUBMIT_TIME between #{startTime} and #{endTime}
+        </if>
+        <if test="contributionIds!=null and contributionIds.size()>0">
+            and ID in
+            <foreach collection="contributionIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="statusList!=null and statusList.size()>0">
+            and status in
+            <foreach collection="statusList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="userIds!=null and userIds.size()>0">
+            and USER_ID in
+            <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <update id="delete" parameterType="com.bjfu.news.req.IdsParam">
+        update news_contribution set disabled = true where id = #{id}
+    </update>
+
+    <update id="update" parameterType="com.bjfu.news.entity.NewsContribution">
+        update news_contribution
+        <set>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="docUrl!=null">
+                DOC_URL=#{docUrl},
+            </if>
+            <if test="docAuthor!=null">
+                DOC_AUTHOR=#{docAuthor},
+            </if>
+            <if test="picAuthor!=null">
+                PIC_AUTHOR=#{picAuthor},
+            </if>
+            <if test="picUrl!=null">
+                PIC_URL=#{picUrl},
+            </if>
+            <if test="note!=null">
+                note=#{note}
+            </if>
+        </set>
+        where ID=#{id}
+    </update>
+</mapper>

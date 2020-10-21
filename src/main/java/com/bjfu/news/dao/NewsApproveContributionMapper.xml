@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjfu.news.dao.NewsApproveContributionMapper">
+    <insert id="insert" parameterType="com.bjfu.news.entity.NewsApproveContribution" keyProperty="id"
+            useGeneratedKeys="true">
+    insert into news_approve_contribution (CONTRIBUTION_ID, USER_ID, DISABLED)
+    values (#{contributionId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{disabled,jdbcType=BIT})
+  </insert>
+
+    <select id="selectById" resultType="com.bjfu.news.entity.NewsApproveContribution">
+       select * from news_approve_contribution where  DISABLED=false  and ID=#{id}
+   </select>
+
+    <select id="selectByCId" resultType="com.bjfu.news.entity.NewsApproveContribution">
+        select * from news_approve_contribution  where disabled = false and CONTRIBUTION_ID=#{contributionId}
+   </select>
+
+    <select id="selectByCIds" resultType="com.bjfu.news.entity.NewsApproveContribution">
+        select * from news_approve_contribution where disabled = false
+        <if test="contributionIds!=null and contributionIds.size()>0">
+            and CONTRIBUTION_ID in
+            <foreach collection="contributionIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectByApproveId" resultType="com.bjfu.news.entity.NewsApproveContribution">
+        select * from news_approve_contribution  where disabled = false and USER_ID=#{approverId}
+   </select>
+
+    <select id="selectByDate"
+            resultType="com.bjfu.news.entity.NewsApproveContribution">
+        select * from news_approve_contribution where disabled = false and APPROVE_TIME between #{startTime} and #{endTime}
+    </select>
+
+    <update id="update" parameterType="com.bjfu.news.entity.NewsApproveContribution">
+        update news_approve_contribution
+        <set>
+            <if test="approveTime!=null">
+                APPROVE_TIME=#{approveTime},
+            </if>
+            <if test="suggestion!=null">
+                suggestion=#{suggestion},
+            </if>
+            <if test="userId!=null">
+                USER_ID=#{userId},
+            </if>
+        </set>
+        where ID=#{id}
+    </update>
+</mapper>

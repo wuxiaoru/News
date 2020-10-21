@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjfu.news.dao.NewsEditContributionMapper">
+    <insert id="insert" parameterType="com.bjfu.news.entity.NewsEditContribution" keyProperty="id"
+            useGeneratedKeys="true">
+    insert into news_edit_contribution (USER_ID, CONTRIBUTION_ID,DISABLED, SUGGESTION)
+    values (#{userId,jdbcType=BIGINT}, #{contributionId,jdbcType=BIGINT}, #{disabled,jdbcType=BIT}, #{suggestion,jdbcType=LONGVARCHAR})
+  </insert>
+
+    <select id="selectById" resultType="com.bjfu.news.entity.NewsEditContribution">
+       select * from news_edit_contribution where  DISABLED=false  and ID=#{id}
+   </select>
+
+    <select id="selectByCId" resultType="com.bjfu.news.entity.NewsEditContribution">
+        select * from news_edit_contribution  where disabled = false and CONTRIBUTION_ID=#{contributionId}
+   </select>
+
+    <select id="selectByEditorId" resultType="com.bjfu.news.entity.NewsEditContribution">
+        select * from news_edit_contribution  where disabled = false and USER_ID=#{editorId}
+   </select>
+
+    <select id="list" parameterType="com.bjfu.news.req.ContributionReq"
+            resultType="com.bjfu.news.entity.NewsEditContribution">
+        select * from news_edit_contribution where disabled = false and USER_ID=#{userId}
+        <if test="contributionIds!=null">
+            and contributionId in
+            <foreach item="contributionId" index="index" collection="contributionIds">
+                #{contributionId}
+            </foreach>
+        </if>
+        litmit #{start},#{size}
+    </select>
+
+    <update id="update" parameterType="com.bjfu.news.entity.NewsEditContribution">
+        update news_edit_contribution set
+        suggestion=#{suggestion}
+        where ID=#{id}
+    </update>
+</mapper>

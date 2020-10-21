@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjfu.news.dao.NewUserRoleMapper">
+
+    <insert id="insertUserRole" parameterType="com.bjfu.news.entity.NewsUserRole" keyProperty="id"
+            useGeneratedKeys="true">
+        insert into news_user_role ( USER_ID, ROLE, DISABLED)
+        values (#{userId,jdbcType=BIGINT}, #{role,jdbcType=VARCHAR},#{disabled,jdbcType=BIT})
+    </insert>
+
+    <select id="loadByRole" resultType="com.bjfu.news.entity.NewsUserRole">
+       select * from news_user_role where  DISABLED=false  and ROLE=#{roleType}
+   </select>
+
+    <select id="loadByUserId" resultType="com.bjfu.news.entity.NewsUserRole">
+       select * from news_user_role where  DISABLED=false  and USER_ID=#{userId}
+   </select>
+
+    <update id="update" parameterType="com.bjfu.news.entity.NewsUserInfo">
+        update news_user_role
+        <set>
+            <if test="disabled!=null">
+                disabled=#{disabled}
+            </if>
+        </set>
+        where ID=#{id}
+    </update>
+
+</mapper>
