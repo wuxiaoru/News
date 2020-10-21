@@ -47,11 +47,6 @@
     <context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true"/>
     <!--<context:property-placeholder location="classpath:config.properties" ignore-unresolvable="true"/>-->
 
-    <!--初始化系统类-->
-    <bean class="com.bjfu.news.untils.InitSystem"/>
-    <!--异常处理类-->
-    <bean id="exceptionHandler" class="com.bjfu.news.untils.GlobalExceptionHandler"/>
-
     <!-- 配置数据源，配置C3P0 -->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
