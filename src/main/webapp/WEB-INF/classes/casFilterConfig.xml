@@ -2,7 +2,7 @@
 <config>
     <loginServer>http://cas.bjfu.edu.cn/cas</loginServer>
     <validateServer>http://cas.bjfu.edu.cn/cas</validateServer>
-    <this>localhost:8085</this>
+    <this>tgxt.bjfu.edu.cn/NewsManager</this>
     <wrapRequest>false</wrapRequest>
     <checkAlive>false</checkAlive>
     <notForceAuthUrls>

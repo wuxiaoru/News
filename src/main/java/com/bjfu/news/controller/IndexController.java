@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.context.support.UiApplicationContextUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,7 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/v1/news")
 public class IndexController {
 
-    @RequestMapping(value = "enum.vpage", method = RequestMethod.GET)
+    @RequestMapping(value = "/enum.vpage", method = RequestMethod.GET)
+    @ResponseBody
     public MapMessage enumList(HttpServletRequest request) {
         CASFilterRequestWrapper reqWrapper = new CASFilterRequestWrapper(request);
         String userID = reqWrapper.getRemoteUser();
