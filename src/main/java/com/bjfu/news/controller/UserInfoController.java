@@ -13,10 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
@@ -25,8 +22,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/v1/user/info")
 @Slf4j
+@CrossOrigin(origins = "*")
 public class UserInfoController extends AbstractNewsController {
 
     //新增
@@ -133,9 +130,7 @@ public class UserInfoController extends AbstractNewsController {
 
     @RequestMapping(value = "role.vpage", method = RequestMethod.GET)
     @ResponseBody
-    public MapMessage roleList(HttpServletRequest request, @Validated @NotNull String eno) {
-        CASFilterRequestWrapper reqWrapper=new CASFilterRequestWrapper(request);
-        String userID = reqWrapper.getRemoteUser();
+    public MapMessage roleList(@Validated @NotNull String eno) {
         if (StringUtils.isEmpty(eno)) {
             return MapMessage.errorMessage().add("info", "职工号不能为空");
         }
@@ -147,5 +142,15 @@ public class UserInfoController extends AbstractNewsController {
         List<NewsUserRole> newsUserRoles = newsUserInfoLoader.loadByUserId(newsUserInfo.getId());
         roles = newsUserRoles.stream().map(NewsUserRole::getRole).collect(Collectors.toList());
         return MapMessage.successMessage().add("role", roles).add("userInfo", newsUserInfo);
+    }
+
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @ResponseBody
+    public MapMessage login(HttpServletRequest request) {
+        CASFilterRequestWrapper reqWrapper = new CASFilterRequestWrapper(request);
+        reqWrapper.getSession().getAttribute("com.neusoft.education.tp.sso.client.filter.receipt");
+        String userID = reqWrapper.getRemoteUser();
+        return MapMessage.successMessage();
     }
 }

@@ -23,10 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +39,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/v1/contribution")
+@CrossOrigin(origins = "*")
 public class WriterContributionController extends AbstractNewsController {
 
     private static String LIN_ACCESS_PATH = "http://202.204.121.200:8561/file/";

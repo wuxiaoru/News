@@ -4,9 +4,9 @@
          version="3.0" metadata-complete="true">
     <display-name>Archetype Created Web Application</display-name>
 
-    <welcome-file-list>
-        <welcome-file>/page/pages/login.jsp</welcome-file>
-    </welcome-file-list>
+<!--    <welcome-file-list>-->
+<!--        <welcome-file>/page/pages/login.jsp</welcome-file>-->
+<!--    </welcome-file-list>-->
 
     <!-- SpringMVC和mybatis的配置文件 -->
     <context-param>
