@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
-@CrossOrigin(origins = "*")
+@CrossOrigin
 public class UserInfoController extends AbstractNewsController {
 
     //新增
