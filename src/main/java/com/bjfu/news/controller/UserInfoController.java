@@ -145,7 +145,7 @@ public class UserInfoController extends AbstractNewsController {
 //    }
 
 
-    @RequestMapping(value = "/NewsManager", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     public MapMessage login(HttpServletRequest request) {
         CASFilterRequestWrapper reqWrapper = new CASFilterRequestWrapper(request);
