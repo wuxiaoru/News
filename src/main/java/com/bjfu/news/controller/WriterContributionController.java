@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/v1/contribution")
-@CrossOrigin(origins = "*")
+@CrossOrigin
 public class WriterContributionController extends AbstractNewsController {
 
     private static String LIN_ACCESS_PATH = "http://202.204.121.200:8561/file/";

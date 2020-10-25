@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/v1/edit")
-@CrossOrigin(origins = "*")
+@CrossOrigin
 public class EditContributionController extends AbstractNewsController {
 
     @RequestMapping(value = "list.vpage", method = RequestMethod.POST)

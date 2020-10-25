@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/approve")
-@CrossOrigin(origins = "*")
+@CrossOrigin
 public class ApproveContributionController extends AbstractNewsController {
 
     @RequestMapping(value = "list.vpage", method = RequestMethod.POST)
