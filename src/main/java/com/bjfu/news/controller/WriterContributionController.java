@@ -394,10 +394,11 @@ public class WriterContributionController extends AbstractNewsController {
 
     @RequestMapping(value = "approve/list.vpage", method = RequestMethod.GET)
     @ResponseBody
-    public MapMessage approveList(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long userId) {
-        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadById(userId);
+    public MapMessage approveList(HttpServletRequest request) {
+        String eno = request.getHeader("eno");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
         if (Objects.isNull(newsUserInfo)) {
-            return MapMessage.errorMessage().add("info", "用户id有误");
+            return MapMessage.errorMessage().add("info", "用户信息有误");
         }
         UserReq req = new UserReq();
         req.setUnit(newsUserInfo.getUnit());

@@ -148,8 +148,14 @@ public class UserInfoController extends AbstractNewsController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     public MapMessage login(HttpServletRequest request) {
-        CASFilterRequestWrapper reqWrapper = new CASFilterRequestWrapper(request);
-        String userId = reqWrapper.getRemoteUser();
+        String userId;
+        try {
+            CASFilterRequestWrapper reqWrapper = new CASFilterRequestWrapper(request);
+            userId = reqWrapper.getRemoteUser();
+        } catch (Exception e) {
+            return MapMessage.errorMessage();
+        }
+
         if (StringUtils.isEmpty(userId)) {
             return MapMessage.errorMessage();
         }
