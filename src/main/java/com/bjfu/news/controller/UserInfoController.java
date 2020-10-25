@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class UserInfoController extends AbstractNewsController {
 
     //新增
-    @RequestMapping(value = "create.vpage", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/user/info/create.vpage", method = RequestMethod.POST)
     @ResponseBody
     public MapMessage create(@Validated @RequestBody UserInfoCreateParam param) {
         if (param.getRoleType() == null || param.getRoleType().isEmpty() || !UserRoleType.NAME_MAPPING.containsKey(param.getRoleType())) {
@@ -45,7 +45,7 @@ public class UserInfoController extends AbstractNewsController {
     }
 
     //列表
-    @RequestMapping(value = "list.vpage", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/user/info/list.vpage", method = RequestMethod.POST)
     @ResponseBody
     public MapMessage insert(@Validated @RequestBody UserReq req) {
         if (req.getRoleType() == null || req.getRoleType().isEmpty() || !UserRoleType.NAME_MAPPING.containsKey(req.getRoleType())) {
@@ -68,7 +68,7 @@ public class UserInfoController extends AbstractNewsController {
         return MapMessage.successMessage().add("data", finalMap);
     }
 
-    @RequestMapping(value = "delete.vpage", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/user/info/delete.vpage", method = RequestMethod.POST)
     @ResponseBody
     public MapMessage insert(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id) {
         NewsUserInfo newsUserInfo = newsUserInfoLoader.loadById(id);
@@ -82,7 +82,7 @@ public class UserInfoController extends AbstractNewsController {
         return MapMessage.successMessage();
     }
 
-    @RequestMapping(value = "edit.vpage", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/user/info/edit.vpage", method = RequestMethod.POST)
     @ResponseBody
     public MapMessage edit(@Validated @RequestBody UserInfoCreateParam param) {
         if (param.getId() == null || param.getId() <= 0) {
@@ -128,29 +128,38 @@ public class UserInfoController extends AbstractNewsController {
         return MapMessage.successMessage();
     }
 
-    @RequestMapping(value = "role.vpage", method = RequestMethod.GET)
+//    @RequestMapping(value = "role.vpage", method = RequestMethod.GET)
+//    @ResponseBody
+//    public MapMessage roleList(@Validated @NotNull String eno) {
+//        if (StringUtils.isEmpty(eno)) {
+//            return MapMessage.errorMessage().add("info", "职工号不能为空");
+//        }
+//        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+//        List<String> roles = new ArrayList<>();
+//        if (Objects.isNull(newsUserInfo)) {
+//            return MapMessage.successMessage().add("role", roles);
+//        }
+//        List<NewsUserRole> newsUserRoles = newsUserInfoLoader.loadByUserId(newsUserInfo.getId());
+//        roles = newsUserRoles.stream().map(NewsUserRole::getRole).collect(Collectors.toList());
+//        return MapMessage.successMessage().add("role", roles).add("userInfo", newsUserInfo);
+//    }
+
+
+    @RequestMapping(value = "/NewsManager", method = RequestMethod.GET)
     @ResponseBody
-    public MapMessage roleList(@Validated @NotNull String eno) {
-        if (StringUtils.isEmpty(eno)) {
-            return MapMessage.errorMessage().add("info", "职工号不能为空");
+    public MapMessage login(HttpServletRequest request) {
+        CASFilterRequestWrapper reqWrapper = new CASFilterRequestWrapper(request);
+        String userId = reqWrapper.getRemoteUser();
+        if (StringUtils.isEmpty(userId)) {
+            return MapMessage.errorMessage();
         }
-        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(userId);
         List<String> roles = new ArrayList<>();
         if (Objects.isNull(newsUserInfo)) {
-            return MapMessage.successMessage().add("role", roles);
+            return MapMessage.successMessage().add("role", roles).add("eno", userId);
         }
         List<NewsUserRole> newsUserRoles = newsUserInfoLoader.loadByUserId(newsUserInfo.getId());
         roles = newsUserRoles.stream().map(NewsUserRole::getRole).collect(Collectors.toList());
         return MapMessage.successMessage().add("role", roles).add("userInfo", newsUserInfo);
-    }
-
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
-    public MapMessage login(HttpServletRequest request) {
-        CASFilterRequestWrapper reqWrapper = new CASFilterRequestWrapper(request);
-        reqWrapper.getSession().getAttribute("com.neusoft.education.tp.sso.client.filter.receipt");
-        String userID = reqWrapper.getRemoteUser();
-        return MapMessage.successMessage();
     }
 }
