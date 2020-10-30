@@ -52,7 +52,13 @@ public class WriterContributionController extends AbstractNewsController {
 
     @RequestMapping(value = "list.vpage", method = RequestMethod.POST)
     @ResponseBody
-    public MapMessage list(@Validated @RequestBody ContributionReq req) {
+    public MapMessage list(@Validated @RequestBody ContributionReq req, HttpServletRequest request) {
+        String eno = request.getHeader("userId");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
+        }
+        req.setUserId(newsUserInfo.getId());
         Map<String, Object> map = new HashMap<>();
         return list(req, map);
     }
