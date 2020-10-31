@@ -58,6 +58,11 @@ public class UserInfoController extends AbstractNewsController {
         if (Objects.isNull(userInfo)) {
             return MapMessage.errorMessage().add("info", "职工号在系统中不存在，请先在系统中登录");
         }
+        List<NewsUserRole> newsUserRoles = newsUserInfoLoader.loadByUserId(userInfo.getId());
+        List<NewsUserRole> collect = newsUserRoles.stream().filter(e -> e.getRole().equals(param.getRoleType())).collect(Collectors.toList());
+        if (collect.size() > 0) {
+            return MapMessage.errorMessage().add("info", "已经添加过此角色");
+        }
         NewsUserRole userRole = new NewsUserRole();
         userRole.setRole(param.getRoleType());
         userRole.setUserId(userInfo.getId());
