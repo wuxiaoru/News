@@ -44,6 +44,31 @@ public class UserInfoController extends AbstractNewsController {
         return MapMessage.successMessage();
     }
 
+    //添加审批人和编辑人
+    @RequestMapping(value = "/v1/user/info/create-role.vpage", method = RequestMethod.POST)
+    @ResponseBody
+    public MapMessage createRole(@Validated @RequestBody UserInfoCreateParam param) {
+        if (param.getRoleType() == null || param.getRoleType().isEmpty() || !UserRoleType.NAME_MAPPING.containsKey(param.getRoleType())) {
+            return MapMessage.errorMessage().add("info", "角色有误");
+        }
+        if (StringUtils.isEmpty(param.getEno())) {
+            return MapMessage.errorMessage().add("info", "职工号有误");
+        }
+        NewsUserInfo userInfo = newsUserInfoLoader.loadByEno(param.getEno());
+        if (Objects.isNull(userInfo)) {
+            return MapMessage.errorMessage().add("info", "职工号在系统中不存在，请先在系统中登录");
+        }
+        NewsUserRole userRole = new NewsUserRole();
+        userRole.setRole(param.getRoleType());
+        userRole.setUserId(userInfo.getId());
+        userRole.setDisabled(false);
+        NewsUserRole result = newsUserInfoService.insertRole(userRole);
+        if (result == null) {
+            return MapMessage.errorMessage().add("info", "添加失败");
+        }
+        return MapMessage.successMessage();
+    }
+
     //列表
     @RequestMapping(value = "/v1/user/info/list.vpage", method = RequestMethod.POST)
     @ResponseBody
@@ -128,21 +153,18 @@ public class UserInfoController extends AbstractNewsController {
         return MapMessage.successMessage();
     }
 
-//    @RequestMapping(value = "role.vpage", method = RequestMethod.GET)
-//    @ResponseBody
-//    public MapMessage roleList(@Validated @NotNull String eno) {
-//        if (StringUtils.isEmpty(eno)) {
-//            return MapMessage.errorMessage().add("info", "职工号不能为空");
-//        }
-//        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
-//        List<String> roles = new ArrayList<>();
-//        if (Objects.isNull(newsUserInfo)) {
-//            return MapMessage.successMessage().add("role", roles);
-//        }
-//        List<NewsUserRole> newsUserRoles = newsUserInfoLoader.loadByUserId(newsUserInfo.getId());
-//        roles = newsUserRoles.stream().map(NewsUserRole::getRole).collect(Collectors.toList());
-//        return MapMessage.successMessage().add("role", roles).add("userInfo", newsUserInfo);
-//    }
+    @RequestMapping(value = "/v1/user/info/detail.vpage", method = RequestMethod.GET)
+    @ResponseBody
+    public MapMessage roleList(@Validated @NotNull String eno) {
+        if (StringUtils.isEmpty(eno)) {
+            return MapMessage.errorMessage().add("info", "职工号不能为空");
+        }
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "职工号在系统中不存在，请先在系统中登录");
+        }
+        return MapMessage.successMessage().add("userInfo", newsUserInfo);
+    }
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)

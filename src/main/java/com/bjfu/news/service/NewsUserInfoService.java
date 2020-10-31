@@ -1,6 +1,7 @@
 package com.bjfu.news.service;
 
 import com.bjfu.news.entity.NewsUserInfo;
+import com.bjfu.news.entity.NewsUserRole;
 import com.bjfu.news.req.UserInfoCreateParam;
 import com.bjfu.news.untils.MapMessage;
 
@@ -12,6 +13,8 @@ public interface NewsUserInfoService {
 
     int delete(Long id);
 
-     int update(NewsUserInfo newsUserInfo);
+    int update(NewsUserInfo newsUserInfo);
+
+    NewsUserRole insertRole(NewsUserRole userRole);
 
 }

@@ -93,4 +93,10 @@ public class NewsUserInfoServiceImpl implements NewsUserInfoService {
         }
         return 0;
     }
+
+    @Override
+    public NewsUserRole insertRole(NewsUserRole userRole) {
+        newUserRoleMapper.insertUserRole(userRole);
+        return userRole;
+    }
 }
