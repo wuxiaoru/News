@@ -5,6 +5,7 @@ import com.bjfu.news.constant.ContributionStatus;
 import com.bjfu.news.constant.OperateType;
 import com.bjfu.news.entity.NewsApproveContribution;
 import com.bjfu.news.entity.NewsContribution;
+import com.bjfu.news.entity.NewsUserInfo;
 import com.bjfu.news.req.ContributionReq;
 import com.bjfu.news.untils.MapMessage;
 import org.springframework.util.CollectionUtils;
@@ -12,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -51,7 +53,12 @@ public class ApproveContributionController extends AbstractNewsController {
     @ResponseBody
     public MapMessage approve(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id,
                               @Validated @NotBlank(message = "状态不能为空") String status,
-                              @RequestParam(required = false) String suggestion) {
+                              @RequestParam(required = false) String suggestion, HttpServletRequest request) {
+        String eno = request.getHeader("userId");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
+        }
         NewsContribution contribution = newsWriterContributionLoader.selectById(id);
         if (Objects.isNull(contribution)) {
             return MapMessage.errorMessage().add("info", "稿件id有误");
@@ -70,13 +77,18 @@ public class ApproveContributionController extends AbstractNewsController {
             contribution.setStatus(ContributionStatus.APPROVAL_REJECTION.name());
         }
         newsWriterContributionService.update(contribution);
-        newsLogService.createLog(OperateType.APPROVE_SUBMIT.name(), 33L, contribution.getId(), contribution.getStatus(), contribution.getDocAuthor(), contribution.getDocUrl(), contribution.getPicAuthor(), contribution.getPicUrl(), suggestion);
+        newsLogService.createLog(OperateType.APPROVE_SUBMIT.name(), newsUserInfo.getId(), contribution.getId(), contribution.getStatus(), contribution.getDocAuthor(), contribution.getDocUrl(), contribution.getPicAuthor(), contribution.getPicUrl(), suggestion);
         return MapMessage.successMessage();
     }
 
     @RequestMapping(value = "withDraw.vpage", method = RequestMethod.POST)
     @ResponseBody
-    public MapMessage withDraw(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id) {
+    public MapMessage withDraw(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id, HttpServletRequest request) {
+        String eno = request.getHeader("userId");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
+        }
         NewsContribution newsContribution = newsWriterContributionLoader.selectById(id);
         if (Objects.isNull(newsContribution)) {
             return MapMessage.errorMessage().add("info", "id有误");
@@ -96,7 +108,7 @@ public class ApproveContributionController extends AbstractNewsController {
         approveContribution.setSuggestion("");
         approveContribution.setApproveTime(null);
         approveContributionService.update(approveContribution);
-        newsLogService.createLog(OperateType.APPROVE_WITH_DRAW.name(), 33L, newsContribution.getId(), newsContribution.getStatus(), newsContribution.getDocAuthor(), newsContribution.getDocUrl(), newsContribution.getPicAuthor(), newsContribution.getPicUrl(), null);
+        newsLogService.createLog(OperateType.APPROVE_WITH_DRAW.name(), newsUserInfo.getId(), newsContribution.getId(), newsContribution.getStatus(), newsContribution.getDocAuthor(), newsContribution.getDocUrl(), newsContribution.getPicAuthor(), newsContribution.getPicUrl(), null);
         return MapMessage.successMessage();
     }
 

@@ -14,7 +14,7 @@ public interface NewsWriterContributionService {
 
     MapMessage submitContribution(ContributionCreateParam param);
 
-    MapMessage fastSubmit(Long id, Long approveId);
+    MapMessage fastSubmit(Long id, Long approveId, Long userId);
 
     MapMessage saveDraft(ContributionCreateParam param);
 }

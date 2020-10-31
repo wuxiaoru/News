@@ -86,13 +86,13 @@ public class NewsWriterContributionServiceImpl implements NewsWriterContribution
         if (approveContribution1 == null) {
             return MapMessage.errorMessage().add("info", "提交稿件失败");
         }
-        newsLogService.createLog(OperateType.CONTRIBUTOR_SUBMIT.name(), 31L, contribution.getId(), contribution.getStatus(), contribution.getDocAuthor(), contribution.getDocUrl(), contribution.getPicAuthor(), contribution.getPicUrl(), null);
+        newsLogService.createLog(OperateType.CONTRIBUTOR_SUBMIT.name(), param.getUserId(), contribution.getId(), contribution.getStatus(), contribution.getDocAuthor(), contribution.getDocUrl(), contribution.getPicAuthor(), contribution.getPicUrl(), null);
         return MapMessage.successMessage();
     }
 
     @Override
     @Transactional
-    public MapMessage fastSubmit(Long id, Long approveId) {
+    public MapMessage fastSubmit(Long id, Long approveId, Long userId) {
         NewsContribution contribution = newsContributionMapper.selectById(id);
         if (contribution == null) {
             return MapMessage.errorMessage().add("info", "提交稿件失败");
@@ -111,7 +111,7 @@ public class NewsWriterContributionServiceImpl implements NewsWriterContribution
             approveContribution.setUserId(approveId);
             newsApproveContributionService.create(approveContribution);
         }
-        newsLogService.createLog(OperateType.CONTRIBUTOR_SUBMIT.name(), 31L, contribution.getId(), contribution.getStatus(), contribution.getDocAuthor(), contribution.getDocUrl(), contribution.getPicAuthor(), contribution.getPicUrl(), null);
+        newsLogService.createLog(OperateType.CONTRIBUTOR_SUBMIT.name(), userId, contribution.getId(), contribution.getStatus(), contribution.getDocAuthor(), contribution.getDocUrl(), contribution.getPicAuthor(), contribution.getPicUrl(), null);
         return MapMessage.successMessage();
     }
 

@@ -27,12 +27,19 @@
     <context:component-scan base-package="com.bjfu.news"/>
 
     <!-- 启动注解驱动的Spring MVC功能，注册请求url和注解POJO类方法的映射 -->
-    <mvc:annotation-driven>
+    <mvc:annotation-driven >
         <mvc:message-converters register-defaults="true">
-            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                <!--设置默认返回数据类型为text/html，编码为UTF-8-->
-                <property name="supportedMediaTypes" value="text/html;charset=UTF-8"/>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter" >
+                <property name = "supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=utf-8</value>
+                        <value>text/html;charset=utf-8</value>
+                        <!-- application 可以在任意 form 表单里面 enctype 属性默认找到 -->
+                        <value>application/x-www-form-urlencoded</value>
+                    </list>
+                </property>
             </bean>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" ></bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
 
@@ -138,10 +145,10 @@
 <!--        <property name="suffix" value=".jsp"/>-->
 <!--    </bean>-->
 
-<!--    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">-->
-<!--        <property name="defaultEncoding" value="UTF-8"/>-->
-<!--        &lt;!&ndash; 指定所上传文件的总大小,单位字节。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 &ndash;&gt;-->
-<!--        <property name="maxUploadSize" value="102400000"/>-->
-<!--    </bean>-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!-- 指定所上传文件的总大小,单位字节。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 -->
+        <property name="maxUploadSize" value="102400000"/>
+    </bean>
 
 </beans>

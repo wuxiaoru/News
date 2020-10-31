@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -98,7 +99,12 @@ public class EditContributionController extends AbstractNewsController {
     @ResponseBody
     public MapMessage deal(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id,
                            @Validated @NotBlank(message = "状态不能为空") String status,
-                           @RequestParam(required = false) String suggestion) {
+                           @RequestParam(required = false) String suggestion, HttpServletRequest request) {
+        String eno = request.getHeader("userId");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
+        }
         NewsContribution contribution = newsWriterContributionLoader.selectById(id);
         if (Objects.isNull(contribution)) {
             return MapMessage.errorMessage().add("info", "稿件id有误");
@@ -115,7 +121,7 @@ public class EditContributionController extends AbstractNewsController {
             contribution.setStatus(ContributionStatus.REJECTION.name());
         }
         newsWriterContributionService.update(contribution);
-        newsLogService.createLog(OperateType.EDITOR_SUBMIT.name(), 34L, contribution.getId(), contribution.getStatus(), contribution.getDocAuthor(), contribution.getDocUrl(), contribution.getPicAuthor(), contribution.getPicUrl(), suggestion);
+        newsLogService.createLog(OperateType.EDITOR_SUBMIT.name(), newsUserInfo.getId(), contribution.getId(), contribution.getStatus(), contribution.getDocAuthor(), contribution.getDocUrl(), contribution.getPicAuthor(), contribution.getPicUrl(), suggestion);
         return MapMessage.successMessage();
     }
 

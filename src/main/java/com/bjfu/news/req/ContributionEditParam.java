@@ -15,5 +15,4 @@ public class ContributionEditParam implements Serializable {
     private String picUrl;
     private String picAuth;
     private String note;
-    private Long userId;
 }

@@ -180,7 +180,13 @@ public class WriterContributionController extends AbstractNewsController {
 
     @ResponseBody
     @RequestMapping(value = "submit.vpage", method = RequestMethod.POST)
-    public MapMessage submit(@Validated @RequestBody ContributionCreateParam param) {
+    public MapMessage submit(@Validated @RequestBody ContributionCreateParam param, HttpServletRequest request) {
+        String eno = request.getHeader("userId");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
+        }
+        param.setUserId(newsUserInfo.getId());
         MapMessage check = check(param);
         if (!check.isSuccess()) {
             return check;
@@ -194,7 +200,12 @@ public class WriterContributionController extends AbstractNewsController {
     @ResponseBody
     @RequestMapping(value = "fast-submit.vpage", method = RequestMethod.POST)
     public MapMessage fastSubmit(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id,
-                                 @Validated @NotNull @Min(value = 1, message = "id必须大于0") Long approveId) {
+                                 @Validated @NotNull @Min(value = 1, message = "id必须大于0") Long approveId, HttpServletRequest request) {
+        String eno = request.getHeader("userId");
+        NewsUserInfo userInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(userInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
+        }
         NewsContribution newsContribution = newsWriterContributionLoader.selectById(id);
         if (Objects.isNull(newsContribution)) {
             return MapMessage.errorMessage().add("info", "稿件id有误");
@@ -206,12 +217,18 @@ public class WriterContributionController extends AbstractNewsController {
         if (Objects.isNull(newsUserInfo)) {
             return MapMessage.errorMessage().add("info", "审稿人id有误");
         }
-        return newsWriterContributionService.fastSubmit(id, approveId);
+        return newsWriterContributionService.fastSubmit(id, approveId, userInfo.getId());
     }
 
     @ResponseBody
     @RequestMapping(value = "draft.vpage", method = RequestMethod.POST)
-    public MapMessage draft(@Validated @RequestBody ContributionCreateParam param) {
+    public MapMessage draft(@Validated @RequestBody ContributionCreateParam param, HttpServletRequest request) {
+        String eno = request.getHeader("userId");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
+        }
+        param.setUserId(newsUserInfo.getId());
         MapMessage check = check(param);
         if (!check.isSuccess()) {
             return check;
@@ -331,10 +348,15 @@ public class WriterContributionController extends AbstractNewsController {
     //重投待审稿编辑
     @RequestMapping(value = "reSubmit.vpage", method = RequestMethod.POST)
     @ResponseBody
-    public MapMessage reSubmit(@Validated @RequestBody ContributionEditParam param) {
+    public MapMessage reSubmit(@Validated @RequestBody ContributionEditParam param, HttpServletRequest request) {
         MapMessage mapMessage = checkContribution(param);
         if (!mapMessage.isSuccess()) {
             return mapMessage;
+        }
+        String eno = request.getHeader("userId");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
         }
         NewsContribution newsContribution = (NewsContribution) mapMessage.get("contribution");
         if (!newsContribution.getStatus().equals(ContributionStatus.APPROVAL_REJECTION.name())) {
@@ -347,7 +369,7 @@ public class WriterContributionController extends AbstractNewsController {
         if (result == 0) {
             return MapMessage.errorMessage().add("info", "编辑失败");
         }
-        newsLogService.createLog(OperateType.CONTRIBUTOR_EDIT.name(), param.getUserId(), newsContribution.getId(), newsContribution.getStatus(), newsContribution.getDocAuthor(), newsContribution.getDocUrl(), newsContribution.getPicAuthor(), newsContribution.getPicUrl(), null);
+        newsLogService.createLog(OperateType.CONTRIBUTOR_EDIT.name(), newsUserInfo.getId(), newsContribution.getId(), newsContribution.getStatus(), newsContribution.getDocAuthor(), newsContribution.getDocUrl(), newsContribution.getPicAuthor(), newsContribution.getPicUrl(), null);
         return MapMessage.successMessage();
     }
 
@@ -381,7 +403,12 @@ public class WriterContributionController extends AbstractNewsController {
 
     @RequestMapping(value = "withDraw.vpage", method = RequestMethod.POST)
     @ResponseBody
-    public MapMessage withDraw(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id) {
+    public MapMessage withDraw(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id, HttpServletRequest request) {
+        String eno = request.getHeader("userId");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
+        }
         NewsContribution newsContribution = newsWriterContributionLoader.selectById(id);
         if (Objects.isNull(newsContribution)) {
             return MapMessage.errorMessage().add("info", "id有误");
@@ -394,14 +421,14 @@ public class WriterContributionController extends AbstractNewsController {
         if (delete == 0) {
             return MapMessage.errorMessage().add("info", "撤回失败");
         }
-        newsLogService.createLog(OperateType.CONTRIBUTOR_WITH_DRAW.name(), 31L, newsContribution.getId(), newsContribution.getStatus(), newsContribution.getDocAuthor(), newsContribution.getDocUrl(), newsContribution.getPicAuthor(), newsContribution.getPicUrl(), null);
+        newsLogService.createLog(OperateType.CONTRIBUTOR_WITH_DRAW.name(), newsUserInfo.getId(), newsContribution.getId(), newsContribution.getStatus(), newsContribution.getDocAuthor(), newsContribution.getDocUrl(), newsContribution.getPicAuthor(), newsContribution.getPicUrl(), null);
         return MapMessage.successMessage();
     }
 
     @RequestMapping(value = "approve/list.vpage", method = RequestMethod.GET)
     @ResponseBody
     public MapMessage approveList(HttpServletRequest request) {
-        String eno = request.getHeader("eno");
+        String eno = request.getHeader("userId");
         NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
         if (Objects.isNull(newsUserInfo)) {
             return MapMessage.errorMessage().add("info", "用户信息有误");
