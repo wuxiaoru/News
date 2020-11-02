@@ -30,11 +30,14 @@ public class ApproveContributionController extends AbstractNewsController {
 
     @RequestMapping(value = "list.vpage", method = RequestMethod.POST)
     @ResponseBody
-    public MapMessage list(@Validated @RequestBody ContributionReq req) {
+    public MapMessage list(@Validated @RequestBody ContributionReq req, HttpServletRequest request) {
         Map<String, Object> map = getInitialMap();
-        if (req.getUserId() == null || req.getUserId() <= 0L) {
-            return MapMessage.successMessage().add("data", map);
+        String eno = request.getHeader("userId");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
         }
+        req.setUserId(newsUserInfo.getId());
         List<NewsApproveContribution> contributions = approveContributionLoader.selectByApproveId(req.getUserId());
         if (CollectionUtils.isEmpty(contributions)) {
             return MapMessage.successMessage().add("data", map);

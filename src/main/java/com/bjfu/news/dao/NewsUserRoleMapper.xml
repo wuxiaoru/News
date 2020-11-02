@@ -16,6 +16,10 @@
        select * from news_user_role where  DISABLED=false  and USER_ID=#{userId}
    </select>
 
+    <select id="loadById" resultType="com.bjfu.news.entity.NewsUserRole">
+       select * from news_user_role where  DISABLED=false  and ID=#{id}
+   </select>
+
     <update id="update" parameterType="com.bjfu.news.entity.NewsUserInfo">
         update news_user_role
         <set>

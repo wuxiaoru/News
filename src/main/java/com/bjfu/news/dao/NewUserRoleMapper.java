@@ -14,6 +14,8 @@ public interface NewUserRoleMapper {
 
     List<NewsUserRole> loadByUserId(Long userId);
 
+    NewsUserRole loadById(Long id);
+
     int update(NewsUserRole newsUserRole);
 
 }

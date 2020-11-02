@@ -100,12 +100,17 @@ public class UserInfoController extends AbstractNewsController {
 
     @RequestMapping(value = "/v1/user/info/delete.vpage", method = RequestMethod.POST)
     @ResponseBody
-    public MapMessage insert(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id) {
+    public MapMessage delete(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id, @Validated @NotNull String roleType) {
         NewsUserInfo newsUserInfo = newsUserInfoLoader.loadById(id);
         if (Objects.isNull(newsUserInfo)) {
             return MapMessage.errorMessage().add("info", "id有误");
         }
-        int delete = newsUserInfoService.delete(id);
+        List<NewsUserRole> newsUserRoles = newsUserInfoLoader.loadByUserId(id);
+        List<NewsUserRole> collect = newsUserRoles.stream().filter(e -> e.getRole().contains(roleType)).collect(Collectors.toList());
+        if (collect.size() < 1) {
+            return MapMessage.errorMessage().add("info", "用户没有这个角色");
+        }
+        int delete = newsUserInfoService.delete(collect.get(0).getId());
         if (delete <= 0) {
             return MapMessage.errorMessage().add("info", "删除失败");
         }
