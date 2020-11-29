@@ -31,8 +31,10 @@ public class FileUtils {
             for (MultipartFile multipartFile : listFile) {
                 in = multipartFile.getInputStream();
                 String originalFilename = multipartFile.getOriginalFilename();
+                String[] strs = originalFilename.split("[.]");
+                String name = strs[0] + "_" + System.currentTimeMillis() + "." + strs[1];
                 //保存到本地服务器
-                String filePath = FileUtils.saveFile(in, originalFilename, FILE_REAL_PATH);
+                String filePath = FileUtils.saveFile(in, name, FILE_REAL_PATH);
                 list.add(filePath);
             }
         } catch (Exception e) {

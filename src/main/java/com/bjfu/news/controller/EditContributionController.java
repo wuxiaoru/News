@@ -110,6 +110,9 @@ public class EditContributionController extends AbstractNewsController {
             return MapMessage.errorMessage().add("info", "稿件id有误");
         }
         NewsEditContribution editContribution = new NewsEditContribution();
+        if (StringUtils.isEmpty(suggestion)) {
+            suggestion = "稿件已录用";
+        }
         editContribution.setSuggestion(suggestion);
         editContribution.setContributionId(contribution.getId());
         editContribution.setDisabled(false);
