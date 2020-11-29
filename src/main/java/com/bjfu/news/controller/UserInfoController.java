@@ -5,6 +5,7 @@ import com.bjfu.news.entity.NewsUserInfo;
 import com.bjfu.news.entity.NewsUserRole;
 import com.bjfu.news.model.UserList;
 import com.bjfu.news.req.UserInfoCreateParam;
+import com.bjfu.news.req.UserInfoEditParam;
 import com.bjfu.news.req.UserReq;
 import com.bjfu.news.untils.MapMessage;
 import com.neusoft.education.tp.sso.client.filter.CASFilterRequestWrapper;
@@ -130,6 +131,21 @@ public class UserInfoController extends AbstractNewsController {
         MapMessage check = check(param);
         if (!check.isSuccess()) {
             return check;
+        }
+        BeanUtils.copyProperties(param, newsUserInfo);
+        int result = newsUserInfoService.update(newsUserInfo);
+        if (result <= 0) {
+            return MapMessage.errorMessage().add("info", "编辑失败");
+        }
+        return MapMessage.successMessage();
+    }
+
+    @RequestMapping(value = "/v1/user/info/eno/edit.vpage", method = RequestMethod.POST)
+    @ResponseBody
+    public MapMessage edit(@Validated @RequestBody UserInfoEditParam param) {
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(param.getEno());
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "职工号有误");
         }
         BeanUtils.copyProperties(param, newsUserInfo);
         int result = newsUserInfoService.update(newsUserInfo);
