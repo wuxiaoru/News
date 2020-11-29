@@ -359,7 +359,7 @@ public class WriterContributionController extends AbstractNewsController {
             return MapMessage.errorMessage().add("info", "用户信息有误");
         }
         NewsContribution newsContribution = (NewsContribution) mapMessage.get("contribution");
-        if (!newsContribution.getStatus().equals(ContributionStatus.APPROVAL_REJECTION.name())) {
+        if (!newsContribution.getStatus().equals(ContributionStatus.APPROVAL_REJECTION.name()) && !newsContribution.getStatus().equals(ContributionStatus.REJECTION.name())) {
             return MapMessage.errorMessage().add("info", "当前稿件状态不是审稿不过待修改，不能编辑");
         }
         BeanUtils.copyProperties(param, newsContribution);
