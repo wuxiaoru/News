@@ -88,6 +88,10 @@ public class EditContributionController extends AbstractNewsController {
                     contributionList.setUnit(newsUserInfo.getUnit());
                 }
             }
+            NewsUserInfo userInfo = newsUserInfoLoader.loadById(contribution.getUserId());
+            if (Objects.nonNull(userInfo)) {
+                contributionList.setUserName(userInfo.getUserName());
+            }
             list.add(contributionList);
         }
         Map<String, Object> finalMap = getFinalMap(count, size, page, list, map);

@@ -16,4 +16,8 @@ public class ContributionList implements Serializable {
     private String docAuthor;
 
     private String submitTime;
+
+    private Long userId;
+
+    private String userName;
 }

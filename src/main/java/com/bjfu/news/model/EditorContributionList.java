@@ -20,4 +20,8 @@ public class EditorContributionList implements Serializable {
     private String approveName;
 
     private String approveTime;
+
+    private Long userId;
+
+    private String userName;
 }

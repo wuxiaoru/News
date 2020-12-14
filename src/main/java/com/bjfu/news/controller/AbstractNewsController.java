@@ -1,6 +1,7 @@
 package com.bjfu.news.controller;
 
 import com.bjfu.news.entity.NewsContribution;
+import com.bjfu.news.entity.NewsUserInfo;
 import com.bjfu.news.model.ContributionList;
 import com.bjfu.news.req.ContributionReq;
 import com.bjfu.news.service.*;
@@ -56,6 +57,10 @@ public abstract class AbstractNewsController {
         for (NewsContribution contribution : writerContributions) {
             ContributionList contributionList = new ContributionList();
             BeanUtils.copyProperties(contribution, contributionList);
+            NewsUserInfo userInfo = newsUserInfoLoader.loadById(contribution.getUserId());
+            if (Objects.nonNull(userInfo)) {
+                contributionList.setUserName(userInfo.getUserName());
+            }
             contributionList.setSubmitTime(DateUtils.DateToString(contribution.getSubmitTime()));
             list.add(contributionList);
         }
