@@ -9,6 +9,12 @@
         <url-pattern>\.vpage</url-pattern>
 <!--        <url-pattern>\.xsl$</url-pattern>-->
 <!--        <url-pattern>\.xml$</url-pattern>-->
+        <url-pattern>\.gif</url-pattern>
+        <url-pattern>\.jpg</url-pattern>
+        <url-pattern>\.png</url-pattern>
+        <url-pattern>\.pdf</url-pattern>
+<!--        <url-pattern>\.docx</url-pattern>-->
+        <url-pattern>\.doc</url-pattern>
 <!--        <url-pattern>\.gif$</url-pattern>-->
 <!--        <url-pattern>\.jpg$</url-pattern>-->
 <!--        <url-pattern>\.bmp$</url-pattern>-->

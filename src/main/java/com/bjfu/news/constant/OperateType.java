@@ -11,7 +11,8 @@ public enum OperateType {
     CONTRIBUTOR_WITH_DRAW("投稿人撤回"),
     CONTRIBUTOR_EDIT("投稿人编辑"),
     APPROVE_WITH_DRAW("审稿人撤销"),
-    EDITOR_SUBMIT("编辑人审批");
+    EDITOR_SUBMIT("编辑人审批"),
+    APPROVE_ADD_SUGGEST("审批人追加意见");
 
     @Getter
     private final String desc;

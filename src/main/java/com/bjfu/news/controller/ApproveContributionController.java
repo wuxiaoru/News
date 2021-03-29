@@ -127,9 +127,18 @@ public class ApproveContributionController extends AbstractNewsController {
 
     @RequestMapping(value = "addSuggestion.vpage", method = RequestMethod.POST)
     @ResponseBody
-    public MapMessage addSuggestion(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id, @Validated @NotBlank String suggestion) {
+    public MapMessage addSuggestion(@Validated @NotNull @Min(value = 1, message = "id必须大于0") Long id, @Validated @NotBlank String suggestion, HttpServletRequest request) {
+        String eno = request.getHeader("userId");
+        NewsUserInfo newsUserInfo = newsUserInfoLoader.loadByEno(eno);
+        if (Objects.isNull(newsUserInfo)) {
+            return MapMessage.errorMessage().add("info", "用户信息有误");
+        }
         NewsApproveContribution approveContribution = approveContributionLoader.selectByCId(id);
         if (Objects.isNull(approveContribution)) {
+            return MapMessage.errorMessage().add("info", "稿件id有误");
+        }
+        NewsContribution newsContribution = newsWriterContributionLoader.selectById(approveContribution.getContributionId());
+        if (Objects.isNull(newsContribution)) {
             return MapMessage.errorMessage().add("info", "稿件id有误");
         }
         if (StringUtils.isEmpty(suggestion)) {
@@ -137,6 +146,7 @@ public class ApproveContributionController extends AbstractNewsController {
         }
         approveContribution.setSuggestion(suggestion);
         approveContributionService.update(approveContribution);
+        newsLogService.createLog(OperateType.APPROVE_ADD_SUGGEST.name(), newsUserInfo.getId(), approveContribution.getContributionId(), newsContribution.getStatus(), newsContribution.getDocAuthor(), newsContribution.getDocUrl(), newsContribution.getPicAuthor(), newsContribution.getPicUrl(), suggestion);
         return MapMessage.successMessage();
     }
 

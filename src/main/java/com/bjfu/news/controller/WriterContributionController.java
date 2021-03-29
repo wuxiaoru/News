@@ -42,9 +42,9 @@ import java.util.stream.Collectors;
 @CrossOrigin
 public class WriterContributionController extends AbstractNewsController {
 
-    private static String LIN_ACCESS_PATH = "http://202.204.121.200:8561/file/";
+    private static String LIN_ACCESS_PATH = "http://202.204.121.200:8080/file/";
 
-    private static String WIN_ACCESS_PATH = "http://localhost:8561/file/";
+    private static String WIN_ACCESS_PATH = "http://localhost:8080/file/";
 
     private static String WIN_FILE_PATH = "D:\\file\\";
 
